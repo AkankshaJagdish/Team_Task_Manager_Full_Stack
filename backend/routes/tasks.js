@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import Task from "../models/Task.js";
 import Project from "../models/Project.js";
-import { auth } from "../middleware/auth.js";
+import { auth } from "../middleware/Auth.js";
 
 const router = express.Router();
 

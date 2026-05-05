@@ -1,6 +1,6 @@
 import express from "express";
 import Project from "../models/Project.js";
-import { auth, adminOnly } from "../middleware/auth.js";
+import { auth, adminOnly } from "../middleware/Auth.js";
 
 const router = express.Router();
 
