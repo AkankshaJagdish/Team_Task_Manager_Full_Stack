@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://teamtaskmanagerfullstack.railway.internal/api"
+  baseURL: "https://teamtaskmanagerfullstack-production-3691.up.railway.app/api"
 });
 
 API.interceptors.request.use(req => {
