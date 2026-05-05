@@ -1,37 +1,32 @@
-import express from "express";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
 
-const router = express.Router();
+// Verify user is authenticated
+export const auth = (req, res, next) => {
+  const header = req.headers.authorization;
 
-// Signup
-router.post("/signup", async (req, res) => {
-  const { name, email, password, role } = req.body;
+  if (!header || !header.startsWith("Bearer ")) {
+    return res.status(401).json({ msg: "No token provided" });
+  }
 
-  const hashed = await bcrypt.hash(password, 10);
+  const token = header.split(" ")[1];
 
-  const user = await User.create({ name, email, password: hashed, role });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  res.json(user);
-});
+    // Attach user info to request
+    req.user = decoded;
 
-// Login
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+    next();
+  } catch (err) {
+    return res.status(401).json({ msg: "Invalid token" });
+  }
+};
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ msg: "User not found" });
+// Restrict to admin users only
+export const adminOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({ msg: "Admin only" });
+  }
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(400).json({ msg: "Wrong password" });
-
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET
-  );
-
-  res.json({ token });
-});
-
-export default router;
+  next();
+};
