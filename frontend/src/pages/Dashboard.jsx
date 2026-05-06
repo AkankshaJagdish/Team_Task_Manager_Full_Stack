@@ -6,7 +6,12 @@ export default function Dashboard() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    API.get("/tasks").then(res => setTasks(res.data));
+    API.get("/tasks")
+      .then(res => setTasks(res.data))
+      .catch(() => {
+        console.log("Failed to fetch tasks");
+        setTasks([]);
+      });
   }, []);
 
   const now = new Date();
@@ -24,6 +29,8 @@ export default function Dashboard() {
 
       <button onClick={() => setFilter("all")}>All</button>
       <button onClick={() => setFilter("mine")}>My Tasks</button>
+
+      {filteredTasks.length === 0 && <p>No tasks yet</p>}
 
       {filteredTasks.map(t => {
         const overdue =
