@@ -9,7 +9,7 @@ export default function Login() {
     const payload = JSON.parse(atob(res.data.token.split(".")[1]));
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("userId", payload.id);
-    window.location = "/dashboard";
+    window.location.reload();;
   };
 
   return (
